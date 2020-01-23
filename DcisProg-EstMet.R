@@ -13,7 +13,7 @@ scrdata <- data.frame(t      = c(0.67,2,4,6.5),
 # -----------------------------------------------------------------
 # ----- Estimate mean sojourn time and screening sensitivity: -----
 # -----------------------------------------------------------------
-estM <- function(data) {
+estM <- function(scrdata) {
   # Estimate DCIS mean sojourn time and screening sensitivity from screening data
   # 
   # Define log likelihood:
@@ -44,18 +44,19 @@ estM <- function(data) {
 # ---------------------------------
 # ----- Supportive function: -----
 # ---------------------------------
-ExpScrByTime <- function(prevpint,M,S,timeLscr=NA,noscr=1) {
+ExpScrByTime <- function(pint,M,S,timeLscr=NA,noscr=1) {
   # Calculates expected number at screening
-  # prevpint	       = Insidence of pre-clinical screening detectable DCIS at initial screeningBackground prevalence ( = "rate first screening"/S)
+  # pint	= Insidence of pre-clinical screening detectable DCIS at initial screening
   # M        = Mean sojourn time
   # S        = Screening test sensitivity
   # timeLscr = Time since last screening
   # mpscr    = No screened
   if (is.na(timeLscr)) {
-    scr.rate <- prevpint*S     # (No earlier screening)
+    scr.rate <- pint*S     # (No earlier screening)
   } else {
-    scr.rate <- ((prevpint*S/S)*(1-S))*(1-pexp(timeLscr,rate=1/M))*S + 
-                 prevpint*pexp(timeLscr,rate=1/M)*S
+    scr.rate <- (pint*(1-S))*(1-pexp(timeLscr,rate=1/M))*S + 
+                 pint*pexp(timeLscr,rate=1/M)*S
   }
   return(scr.rate*noscr)
 }
+
